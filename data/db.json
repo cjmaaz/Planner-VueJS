@@ -1,0 +1,18 @@
+{
+  "projects": [
+    {
+      "title": "Learn JavaScript!",
+      "details": "For basic of all projects",
+      "completed": false,
+      "id": 1,
+      "complete": true
+    },
+    {
+      "title": "Learn Vuejs! NOW",
+      "details": "Superb front-end framework.",
+      "completed": false,
+      "id": 2,
+      "complete": false
+    }
+  ]
+}

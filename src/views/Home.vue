@@ -1,18 +1,57 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <FilterNav @filterProject="status = $event" :status="status" />
+    <div v-if="projects.length">
+      <div v-for="project in filteredProjects" :key="project.id">
+        <SingleProject
+          :project="project"
+          @delete="deleteProject"
+          @toggleDone="markProject"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
+import SingleProject from "@/components/SingleProject.vue";
+import FilterNav from "@/components/FilterNav.vue";
 export default {
-  name: 'Home',
+  name: "Home",
+  data() {
+    return {
+      projects: [],
+      status: "all",
+    };
+  },
   components: {
-    HelloWorld
-  }
-}
+    SingleProject,
+    FilterNav,
+  },
+  mounted() {
+    fetch("http://localhost:3000/projects")
+      .then((res) => res.json())
+      .then((data) => (this.projects = data))
+      .catch((err) => console.log(err.message));
+  },
+  methods: {
+    deleteProject(id) {
+      this.projects = this.projects.filter((project) => project.id !== id);
+    },
+    markProject(id) {
+      let p = this.projects.find((project) => project.id === id);
+      p.complete = !p.complete;
+    },
+  },
+  computed: {
+    filteredProjects() {
+      if (this.status === "completed") {
+        return this.projects.filter((project) => project.complete);
+      } else if (this.status === "ongoing") {
+        return this.projects.filter((project) => !project.complete);
+      }
+      return this.projects;
+    },
+  },
+};
 </script>
